@@ -47,18 +47,21 @@ public class ClassManager<K, CT> {
 	 */
 	public interface InternalReloadable {
 		/**
-		 * a data bus for use with dumping variables that need to persist across reloads
+		 * a data bus for use with dumping data that need to persist across reloads
 		 * 
 		 * @return
 		 */
-		HashMap<String, Object> dump();
+		default HashMap<String, Object> dump() {
+			return null;
+		}
 
 		/**
-		 * a data bus for use with loading variables that need to persist across reloads
+		 * a data bus for use with loading data that need to persist across reloads
 		 * 
 		 * @param bulk
 		 */
-		void load(HashMap<String, Object> bulk);
+		default void load(HashMap<String, Object> dBus) {
+		}
 	}
 
 }
