@@ -1,7 +1,11 @@
 package pkg.deepCurse.javlaModlu.managers;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URLClassLoader;
 import java.util.HashMap;
+
+import qj.util.lang.DynamicClassLoader;
 
 /**
  * 
@@ -15,20 +19,22 @@ public class ClassManager<K, CT> {
 
 	private HashMap<K, Class<CT>> classMap;
 	private ClassLoader classLoader;
+	private URLClassLoader urlClassLoader;
 
 	public ClassManager() {
 		classLoader = getClass().getClassLoader();
 		classMap = new HashMap<K, Class<CT>>();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void add(K key, String path) throws ClassNotFoundException {
 		Class<CT> loadedMyClass = (Class<CT>) classLoader.loadClass(path);
 		classMap.put(key, loadedMyClass);
 	}
 
-	public void addFile(File file) {
-
+	public void addFile(K key, String name, File file) throws ClassNotFoundException, IOException {
+		classMap.put(key, (Class<CT>) new DynamicClassLoader(file.getPath()).load(name));
+//		Class<CT> loadedMyClass = (Class<CT>) Class.forName(name, true, urlClassLoader.newInstance(new URL[] {file.toURI().toURL()}));
+//		classMap.put(key, loadedMyClass);
 	}
 
 	public void remove(String path) {
@@ -45,13 +51,13 @@ public class ClassManager<K, CT> {
 	 * 
 	 * @author u1d
 	 */
-	public interface InternalReloadable {
+	public interface InternalReloadable<K, V> {
 		/**
 		 * a data bus for use with dumping data that need to persist across reloads
 		 * 
 		 * @return
 		 */
-		default HashMap<String, Object> dump() {
+		default public HashMap<String, Object> dump() {
 			return null;
 		}
 
@@ -60,8 +66,13 @@ public class ClassManager<K, CT> {
 		 * 
 		 * @param bulk
 		 */
-		default void load(HashMap<String, Object> dBus) {
+		default public void load(HashMap<String, Object> dBus) {
 		}
+
+	}
+
+	public Class<CT> getClass(K key) {
+		return classMap.get(key);
 	}
 
 }

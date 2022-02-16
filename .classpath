@@ -7,5 +7,6 @@
 	</classpathentry>
 	<classpathentry excluding="/" kind="src" path="src"/>
 	<classpathentry kind="src" path="to-load"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/classreloading"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
